@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports: 
+        - 8080-8081:8080
+    volumes:
+        - ./target/:/usr/app/
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: web
+      SERVICE_CHECK_HTTP: /health/ready
+      SERVICE_CHECK_INTERVAL: 5s
+      SERVICE_CHECK_TIMEOUT: 3s
+  registrator:
+    image: gliderlabs/registrator:latest
+    container_name: registrator
+    ports: 
+        - 8500:8500
+    environment:
+      SERVICE_NAME: registrator
+      SERVICE_TAGS: registrator
+      SERVICE_CHECK_TTL: 30s
+      SERVICE_CHECK_INTERVAL: 5s
+      SERVICE_CHECK_TIMEOUT: 3s
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: "-ip 192.168.122.68 consul://192.168.122.19:8500"
+    links:
+      - app

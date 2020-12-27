@@ -1,0 +1,34 @@
+version: '3'
+services:
+  consul:
+    image: consul
+    container_name: consul
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+      - ui
+      - bootstrap
+      - client=0.0.0.0    
+    ports: 
+       - 8300:8300
+       - 8500:8500
+  consul-template:
+    image: hashicorp/consul-template:alpine
+    container_name: consul-template
+    volumes:
+     - "./consul-template:/consul-template"
+     - "./nginx:/etc/nginx/conf.d/"
+    environment:
+     - consul:consul
+     - nginx:nginx
+    command: consul-template -config /consul-template/consul-template.hcl
+  nginx:
+    image: nginx:1.19.3-alpine
+    container_name: nginx
+    restart: on-failure:10
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
+    ports:
+        - 8989:8989
+    links: 
+        - consul-template    
+
