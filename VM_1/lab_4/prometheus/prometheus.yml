@@ -1,14 +1,15 @@
 global:
-  scrape_interval: 5s
-  external_labels:
-    monitor: 'prakash-monitor'
+  scrape_interval: 35s
+  evaluation_interval: 35s
+  scrape_timeout: 35s  
+
 scrape_configs:
-  - job_name: 'prometheus' 
-    static_configs: 
-      - targets: ['localhost:9090']
+  - job_name: 'consul_app'
+    consul_sd_configs:
+    - server: '192.168.122.230:8500'
+      services:
+        - 'app'
+      refresh_interval: 5s
 
-  - job_name: 'application1'
 
-    metrics_path: '/metrics/application'
-    static_configs:
-      - targets: ['192.168.122.19:8080']  
+
