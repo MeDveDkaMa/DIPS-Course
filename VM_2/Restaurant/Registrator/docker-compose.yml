@@ -1,0 +1,10 @@
+version: '3'
+services:
+  registrator:
+    image: gliderlabs/registrator:latest
+    container_name: registrator
+    network_mode: host
+    restart: on-failure:10
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: "-deregister=always -ip ${HOST_IP} consul://consul.service.consul:8500"
