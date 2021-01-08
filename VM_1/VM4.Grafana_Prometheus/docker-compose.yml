@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/data:/prometheus/
+    environment:
+      SERVICE_NAME: prometheus
+      SERVICE_TAGS: prometheus
+      SERVICE_CHECK_HTTP: /-/healthy
+      SERVICE_CHECK_INTERVAL: 10s
+      SERVICE_CHECK_TIMEOUT: 3s
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/datasources/:/etc/grafana/provisioning/datasources/
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "111111"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      SERVICE_NAME: grafana
+      SERVICE_TAGS: grafana
+      SERVICE_CHECK_HTTP: /api/health
+      SERVICE_CHECK_INTERVAL: 10s
+      SERVICE_CHECK_TIMEOUT: 3s
+  registrator:
+    image: gliderlabs/registrator:latest
+    container_name: registrator
+    network_mode: host
+    restart: unless-stopped
+    depends_on:
+      - "grafana"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: "-cleanup=true -ip ${HOST_IP} consul://consul.service.consul:8500"
