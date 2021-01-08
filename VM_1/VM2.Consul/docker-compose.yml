@@ -1,0 +1,48 @@
+version: '3'
+services:
+  consul:
+    image: consul
+    container_name: consul
+    network_mode: host
+    volumes:
+     - "./consul/data:/consul/data"
+    environment:
+      - CONSUL_BIND_INTERFACE=ens3
+      - ui
+      - bootstrap
+      - client=0.0.0.0
+      - CONSUL_ALLOW_PRIVILEGED_PORTS=yes
+      - SERVICE_NAME=consul
+      - SERVICE_TAGS=consul      
+      - SERVICE_8600_IGNORE=true
+      - SERVICE_8300_IGNORE=true
+      - SERVICE_8500_IGNORE=true
+    ports: 
+       - 8300:8300
+       - 8500:8500
+       - 8600:8600
+  nginx-template:
+    build: ./nginx_consul-template/.
+    container_name: nginx_template
+    restart: unless-stopped
+    volumes:
+      - ./nginx_consul-template/nginx:/etc/nginx/conf.d/
+      - "./nginx_consul-template/consul-template:/etc/consul-template/"
+    environment:
+      - SERVICE_8989_NAME=nginx
+      - SERVICE_TAGS=nginx 
+    ports:
+      - 8989:8989
+    depends_on:
+      - "consul"
+    command: sh -c "/usr/sbin/nginx && /usr/local/bin/consul-template -config /etc/consul-template/consul-template.hcl"
+  registrator:
+    image: gliderlabs/registrator:latest
+    container_name: registrator
+    network_mode: host
+    restart: unless-stopped
+    depends_on:
+      - "nginx-template"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: "-cleanup=true -ip ${HOST_IP} consul://consul.service.consul:8500"

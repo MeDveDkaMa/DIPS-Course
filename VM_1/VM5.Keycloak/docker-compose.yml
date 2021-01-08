@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  postgres:
+      image: postgres
+      container_name: postgres
+      volumes:
+        - ./postgres/postgres_data:/var/lib/postgresql/data/
+      environment:
+        - POSTGRES_DB=keycloak
+        - POSTGRES_USER=keycloak
+        - POSTGRES_PASSWORD=111111
+        - SERVICE_NAME=postgres
+        - SERVICE_TAGS=postgres
+  keycloak:
+    image: jboss/keycloak
+    container_name: keycloak
+    volumes:
+        - ./postgres/postgres_data:/var/lib/postgresql/data/
+    environment:
+        - SERVICE_NAME=keycloak
+        - SERVICE_TAGS=keycloak
+        - SERVICE_8080_NAME=keycloak
+        - DB_VENDOR=POSTGRES
+        - DB_ADDR=postgres
+        - DB_DATABASE=keycloak
+        - DB_USER=keycloak
+        - DB_SCHEMA=public
+        - DB_PASSWORD=111111
+        - KEYCLOAK_USER=admin
+        - KEYCLOAK_PASSWORD=admin
+        - PROXY_ADDRESS_FORWARDING=true
+    restart: unless-stopped
+    ports:
+      - '8180:8080'
+  registrator:
+    image: gliderlabs/registrator:latest
+    container_name: registrator
+    network_mode: host
+    restart: unless-stopped
+    depends_on:
+      - "keycloak"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: "-cleanup=true -ip ${HOST_IP} consul://consul.service.consul:8500"  
+

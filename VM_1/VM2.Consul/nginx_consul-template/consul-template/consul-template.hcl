@@ -1,5 +1,5 @@
 consul {
-  address = "consul:8500"
+  address = "consul.service.consul:8500"
   retry {
     enabled = true
     attempts = 0
@@ -9,6 +9,7 @@ consul {
 }
 
 template {
-  source = "/consul-template/all-services.ctmpl"
+  source = "/etc/consul-template/all-services.ctmpl"
   destination = "/etc/nginx/conf.d/default.conf"
+  command     = "/usr/sbin/nginx -s reload"
 }
