@@ -23,6 +23,7 @@ services:
        - 8600:8600
   nginx-template:
     build: ./nginx_consul-template/.
+    image: nginx-template
     container_name: nginx_template
     restart: unless-stopped
     volumes:
