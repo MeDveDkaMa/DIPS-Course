@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    image: medvedkama/microservice-kitchen
+    ports:
+      - "8080"
+    env_file: .env
+    environment:
+      SERVICE_NAME: microservices
+      SERVICE_TAGS: backend
+      SERVICE_CHECK_HTTP: /health/ready
+      SERVICE_CHECK_INTERVAL: 5s

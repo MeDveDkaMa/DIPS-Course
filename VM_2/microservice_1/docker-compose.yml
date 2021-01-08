@@ -1,7 +1,8 @@
 version: '3'
 services:
   app:
-    image: medvedkama/microservice_1
+     #image: medvedkama/microservice_1
+    build: .
     ports:
       - "8080"
     volumes:
@@ -16,10 +17,8 @@ services:
     image: gliderlabs/registrator:latest
     container_name: registrator
     network_mode: host
-    ports:
-      - 8500:8500
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
     depends_on:
       - "app"
-    command: "-cleanup=true -ip ${HOST_IP} consul://192.168.122.68:8500"
+    command: "-cleanup=true -ip ${HOST_IP} consul://vm1:8500"
