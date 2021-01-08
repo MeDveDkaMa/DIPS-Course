@@ -1,6 +1,7 @@
 package kitchen;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -35,5 +36,11 @@ public class DishResource {
         return kitchenService.me(user);
     }
 
+    @GET
+    @Path("/{number}")
+    @Produces("text/plain")
+    public String addDish(@PathParam long number) {
+        return kitchenService.metric(number);
+    }
 
 }

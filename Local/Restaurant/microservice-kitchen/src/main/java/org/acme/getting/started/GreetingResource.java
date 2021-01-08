@@ -1,5 +1,6 @@
 package org.acme.getting.started;
 
+import io.quarkus.security.Authenticated;
 import org.acme.getting.started.bean.Dish;
 import org.acme.getting.started.bean.User;
 
@@ -7,7 +8,16 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("/api")
+@Authenticated
 public class GreetingResource {
+
+    @GET
+    @Path("/test")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "user";
+    }
+
 
     @POST
     @Path("/me")
