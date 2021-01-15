@@ -68,13 +68,3 @@ services:
      - ELASTICSEARCH_HOSTS=http://es01:9200
     networks:
       - elknetwork
-  registrator:
-    image: gliderlabs/registrator:latest
-    container_name: registrator
-    network_mode: host
-    restart: unless-stopped
-    depends_on:
-      - "kib01"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-    command: "-cleanup=true -ip ${HOST_IP} consul://consul.service.consul:8500"

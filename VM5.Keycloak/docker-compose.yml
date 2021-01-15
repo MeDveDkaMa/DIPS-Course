@@ -33,14 +33,5 @@ services:
     restart: unless-stopped
     ports:
       - '8180:8080'
-  registrator:
-    image: gliderlabs/registrator:latest
-    container_name: registrator
-    network_mode: host
-    restart: unless-stopped
     depends_on:
-      - "keycloak"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-    command: "-cleanup=true -ip ${HOST_IP} consul://consul.service.consul:8500"  
-
+      - "postgres"

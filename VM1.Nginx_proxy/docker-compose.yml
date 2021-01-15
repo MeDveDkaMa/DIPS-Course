@@ -11,13 +11,3 @@ services:
       - SERVICE_TAGS=nginx-p
     ports:
       - 7777:7777
-  registrator:
-    image: gliderlabs/registrator:latest
-    container_name: registrator
-    network_mode: host
-    restart: unless-stopped
-    depends_on:
-      - "nginx_proxy"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-    command: "-cleanup=true -ip ${HOST_IP} consul://consul.service.consul:8500"
