@@ -1,13 +1,13 @@
 version: '3'
 services:
   nginx_proxy:
-    image: nginx:1.19.3-alpine
+    image: nginx:alpine
     container_name: nginx_proxy
     restart: unless-stopped
     volumes:
       - ./config/:/etc/nginx/conf.d/
     environment:
-      - SERVICE_7777_NAME=restaurant
+      - SERVICE_80_NAME=medvedkama
       - SERVICE_TAGS=nginx-p
     ports:
-      - 7777:7777
+      - 80:80

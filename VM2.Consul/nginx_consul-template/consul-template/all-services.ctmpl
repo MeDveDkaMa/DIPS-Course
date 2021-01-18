@@ -23,7 +23,9 @@ server {
     proxy_set_header    Host            $http_host;
     proxy_set_header   X-Forwarded-User  $remote_user;
     access_log /var/log/nginx/access.log upstreamlog;
-
+    proxy_buffer_size   64k;
+    proxy_buffers   4 64k;
+    proxy_busy_buffers_size   64k;
   }
   
 }

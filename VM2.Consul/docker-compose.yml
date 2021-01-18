@@ -7,13 +7,9 @@ services:
     volumes:
      - "./consul/data:/consul/data"
     environment:
-      - CONSUL_BIND_INTERFACE=ens3
-      - ui
-      - bootstrap
-      - client=0.0.0.0
       - CONSUL_ALLOW_PRIVILEGED_PORTS=yes
       - SERVICE_NAME=consul
-      - SERVICE_TAGS=consul      
+      - SERVICE_TAGS=consul
       - SERVICE_8600_IGNORE=true
       - SERVICE_8300_IGNORE=true
       - SERVICE_8500_IGNORE=true
@@ -21,6 +17,7 @@ services:
        - 8300:8300
        - 8500:8500
        - 8600:8600
+    command: "agent -server -bind=${HOST_IP} -bootstrap -ui -client=0.0.0.0 -alt-domain restaurant "
   nginx-template:
     build: ./nginx_consul-template/.
     image: nginx-template

@@ -1,4 +1,4 @@
-FROM nginx:1.19.6-alpine
+FROM nginx:alpine
 
 ADD https://releases.hashicorp.com/consul-template/0.25.1/consul-template_0.25.1_linux_amd64.zip /
 
